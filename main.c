@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -12,7 +13,7 @@
     - Edit Some Information About The Book [id, name, author]
     - Show Books
 */
-
+/*
 // Strcture
 typedef struct Book {
     struct Info *info_book;
@@ -164,6 +165,7 @@ void delete_books(Book *info_book, int nbr_of_book) {
 
 */
 // Start Display Function
+/*
 void dispay_books(Book *book) {
     if (book == NULL) printf("\nThe List is Empty\n");
     else {
@@ -187,7 +189,7 @@ void trach(Book *info_book, int nbr_of_book) {
 }
 // End Trach Function
 */
-
+/*
 
 int main() {
     int choose, nbr_of_book = 0;
@@ -231,8 +233,12 @@ int main() {
 }
 
 
+*/
 
-
+int main() {
+        printf("Hello World");
+        return 0;
+}
 
 
 
