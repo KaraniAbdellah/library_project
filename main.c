@@ -15,68 +15,72 @@
 
 // Strcture
 typedef struct Book {
+    struct Info *info_book;
+    struct Book *next;
+} Book;
+
+typedef struct Info {
     int id;
     char book_name[50];
     char author_name[50];
-} Book;
-
+} Info;
 
 // Start Add Function
-int add_books(Book *info_book, int nbr_of_book) {
+Book *create_book(Book *book) {
+    Book *new_book = (Book *) malloc(sizeof(Book));
+    printf("Enter Name Of The Book : "); getchar();
+    scanf("%[^\n]", &new_book->info_book->book_name);
+    printf("Enter The Id Of The Book : ");
+    scanf("%d", &new_book->info_book->id); getchar();
+    printf("Enter The Author Name : ");
+    scanf("%[^\n]", &new_book->info_book->author_name);
+    book->next = new_book;
+    return new_book;
+}
+
+Book *add_books(Book *book, int *nbr_of_book) {
     int book_nbr;
     printf("Enter Number Of Books : ");
     scanf("%d", &book_nbr);
+    Book *new_book = (Book *) malloc(sizeof(Book));
     for (int i = 0; i < book_nbr; i++) {
         printf("\n-- Book %d\n", i + 1);
-        printf("Enter Name Of The Book : "); getchar();
-        scanf("%[^\n]s", &info_book[nbr_of_book + i].book_name);
-        printf("Enter The Id Of The Book : ");
-        scanf("%d", &info_book[nbr_of_book + i].id); getchar();
-        printf("Enter The Author Name : ");
-        scanf("%[^\n]s", &info_book[nbr_of_book + i].author_name);
+        book = create_book(book);
     }
-    nbr_of_book += book_nbr;
-    return nbr_of_book; // Start of Filing The Data
+    *nbr_of_book += book_nbr;
+    return book;
 }
 // End Add Function
 
+/*
 // Start Edit Function
-void edit_bookName(Book *info_book, int pos) {
-
-}
-
-void edit_authorName(Book *info_book, int pos) {
-
-}
-
-void edit_id(Book *info_book, int pos) {
-
-}
-
 void edit_books(Book *info_book, int nbr_of_book) {
-    int choose_edit;
-    char book_edit_cur[50], book_edit_new[50];
-    printf("\t\t\t\t\t[1]: Edit Book Name\n");
-    printf("\t\t\t\t\t[2]: Edit Author Name\n");
-    printf("\t\t\t\t\t[3]: Edit Id Name\n");
-    printf("Choose Method For Editing : ");
-    scanf("%d", &choose_edit); getchar();
-    int pos = search_books(info_book, nbr_of_book);
+    // Test Is This Book Exit
+    int pos = search_bookName(info_book, nbr_of_book);
     if (pos != -1) {
-        switch(choose_edit) {
-            case 1: {
-                edit_bookName(info_book, pos); break;
-            }
-            case 2: {
-                edit_authorName(info_book, pos); break;
-            }
-            case 3: {
-                edit_id(info_book, pos); break;
-            }
-            default: break;
-        }
+        char new_book_name[50];
+        printf("\nEnter New Book Name : ");
+        // gets(new_book_name);
+        scanf("%[^\n]s", new_book_name); new_book_name[49] = '\0';
+        strcpy(info_book[pos].book_name, new_book_name);
     }
-
+    // Test Is This Author Exit
+    pos = search_authorName(info_book, nbr_of_book);
+    if (pos != -1) {
+        char new_author_name[50];
+        printf("\nEnter New Author Name : ");
+        // gets(new_author_name);
+        scanf("%[^\n]s", new_author_name); new_author_name[49] = '\0';
+        strcpy(info_book[pos].author_name ,new_author_name);
+    }
+    // Test Is This Author Exit
+    pos = search_id(info_book, nbr_of_book);
+    if (pos != -1) {
+        char new_id;
+        printf("\nEnter New Id : ");
+        scanf("%d", &new_id);
+        info_book[pos].id = new_id;
+    }
 }
 // End Edit Function
 
@@ -85,7 +89,7 @@ void edit_books(Book *info_book, int nbr_of_book) {
 int search_bookName(Book *info_book, int nbr_of_book) {
     char book_name[50]; getchar();
     printf("Enter The Name Of Book : ");
-    scanf("%[^\n]s", book_name); book_name[49] = '\0';
+    gets(book_name);
     // Start Searching About The Books
     for (int i = 0; i < nbr_of_book; i++) {
         if (strcmp(book_name, info_book[i].book_name) == 0) {
@@ -93,14 +97,15 @@ int search_bookName(Book *info_book, int nbr_of_book) {
             return i;
         }
     }
-    printf("\t\t\t\t\tWe Do Not Fount %s At List", book_name[50]);
+    printf("\t\t\t\t\tWe Can Not Found %s At List\n", book_name);
     return -1;
 }
 
 int search_authorName(Book *info_book, int nbr_of_book) {
     char author_name[50]; getchar();
     printf("Enter The Author Of Book : ");
-    scanf("%[^\n]s", author_name); author_name[49] = '\0';
+    gets(author_name);
+    // scanf("%[^\n]s", author_name); author_name[49] = '\0';
     // Start Searching About The Books
     for (int i = 0; i < nbr_of_book; i++) {
         if (strcmp(author_name, info_book[i].author_name) == 0) {
@@ -108,7 +113,7 @@ int search_authorName(Book *info_book, int nbr_of_book) {
             return i;
         }
     }
-    printf("\t\t\t\t\tWe Do Not Fount %s At List", author_name[50]);
+    printf("\t\t\t\t\tWe Do Not Fount %s At List\n", author_name[50]);
     return -1;
 }
 
@@ -123,7 +128,7 @@ int search_id(Book *info_book, int nbr_of_book) {
             return i;
         }
     }
-    printf("\t\t\t\t\tWe Do Not Fount %d At List", id);
+    printf("\t\t\t\t\tWe Do Not Fount %d At List\n", id);
     return -1;
 }
 
@@ -150,33 +155,43 @@ int search_books(Book *info_book, int nbr_of_book) {
 }
 // End Search Function
 
+
 // Start Delete Function
 void delete_books(Book *info_book, int nbr_of_book) {
     printf("Hello 1");
 }
 // End Delete Function
 
-
+*/
 // Start Display Function
-void dispay_books(Book *info_book, int nbr_of_book) {
-    for (int i = 0; i < nbr_of_book; i++) {
-        printf("\nBOOK %d : \n", i + 1);
-        printf("%d %s %s", info_book[i].id, info_book[i].author_name, info_book[i].book_name);
+void dispay_books(Book *book) {
+    if (book == NULL) printf("\nThe List is Empty\n");
+    else {
+        Book *temp = book;
+        int i = 0;
+        while (temp != NULL) {
+            printf("\nBOOK %d : \n", i + 1);
+            printf("%d %s %s", temp->info_book->id, temp->info_book->author_name, temp->info_book->book_name);
+            // printf("%d %s %s", info_book[i].id, info_book[i].author_name, info_book[i].book_name);
+            temp = temp->next;
+            i++;
+        }
     }
 }
 // End Display Function
 
+/*
 // Start Trach Function
 void trach(Book *info_book, int nbr_of_book) {
     printf("Trach Function");
 }
 // End Trach Function
-
+*/
 
 
 int main() {
     int choose, nbr_of_book = 0;
-    Book info_book[50];
+    Book *book = NULL;
     printf("[1]: Add A Book\n");
     printf("[2]: Search About Book\n");
     printf("[3]: Delete A Book\n");
@@ -188,24 +203,25 @@ int main() {
         printf("\n--------------------------------\n");
         printf("Enter An Operation : ");
         scanf("%d", &choose);
+        choose = (int) choose;
         switch(choose) {
             case 1: {
-                nbr_of_book = add_books(info_book, nbr_of_book); break;
+                book = add_books(book, &nbr_of_book); break;
             }
             case 2: {
-                search_books(info_book, nbr_of_book); break;
+                //search_books(info_book, nbr_of_book); break;
             }
             case 3: {
-                delete_books(info_book, nbr_of_book); break;
+                //delete_books(info_book, nbr_of_book); break;
             }
             case 4: {
-                edit_books(info_book, nbr_of_book); break;
+                //edit_books(info_book, nbr_of_book); break;
             }
             case 5: {
-                dispay_books(info_book, nbr_of_book); break;
+                //dispay_books(info_book, nbr_of_book); break;
             }
             case 6: {
-                trach(info_book, nbr_of_book);
+                //trach(info_book, nbr_of_book);
                 break;
             }
             default: break;
