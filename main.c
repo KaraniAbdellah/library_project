@@ -211,15 +211,40 @@ int search_books(Book *book) {
 
 
 // Start Delete Function
-
-void delete_bookName(Book *book) {
+void delete_bookName(Book ***book) {
+    Book *temp = **book;
     char book_name[50];
+    printf("Enter The Name Of The Book : "); getchar();
+    gets(book_name);
+    // Find The Book
+    while (1) {
+        if (strcmp(temp->book_name, book_name) == 0) {
+            Book *p = temp;
+            if (strcmp((**book)->book_name, book_name) == 0) {
+                **book = temp->next;
+            }
+            temp = temp->next;
+            free(p);
+            break;
+        }
+        temp = temp->next;
+        if (temp == NULL) {
+            printf("\t\t\t\t\t We Can Found This Book\n"); break;
+        }
+    }
+}
+
+
+void delete_authorName(Book *book) {
 
 }
 
-void delete_books(Book *book) {
-    Book *temp = book;
-    // Choose Editing
+void delete_id(Book *book) {
+
+}
+
+void delete_books(Book **book) {
+    // Choose Deleting
     int choose_delete;
     printf("\t\t\t\t\t[1]: Deleting Using Book Name\n");
     printf("\t\t\t\t\t[2]: Deleting Using Author Name\n");
@@ -231,10 +256,10 @@ void delete_books(Book *book) {
             delete_bookName(book); break;
         }
         case 2: {
-            delete_authorName(book); break;
+            delete_authorName(&book); break;
         }
         case 3: {
-            delete_id(book); break;
+            delete_id(&book); break;
         }
         default: break;
     }
@@ -289,7 +314,7 @@ int main() {
                 search_books(book); break;
             }
             case 3: {
-                // delete_books(book); break;
+                delete_books(&book); break;
             }
             case 4: {
                 edit_books(book); break;
