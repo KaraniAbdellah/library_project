@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -49,41 +48,86 @@ void add_books(Book **book) {
 
 
 // Start Edit Function
+void edit_bookName(Book *book) {
+    Book *temp = book;
+    char book_name[50];
+    printf("Enter The Name Of The Book : "); getchar();
+    gets(book_name);
+    // Find The Book
+    while (1) {
+        if (strcmp(temp->book_name, book_name) == 0) {
+            char new_book_name[50];
+            printf("Enter The New Name : ");
+            gets(new_book_name);
+            strcpy(temp->book_name, new_book_name); break;
+        }
+        temp = temp->next;
+        if (temp == NULL) {
+            printf("\t\t\t\t\t We Can Found This Book\n"); break;
+        }
+    }
+}
+
+void edit_authorName(Book *book) {
+    Book *temp = book;
+    char author_name[50];
+    printf("Enter The Name Of The Author : "); getchar();
+    gets(author_name);
+    // Find The Book
+    while (1) {
+        if (strcmp(temp->author_name, author_name) == 0) {
+            char new_author_name[50];
+            printf("Enter The New Name : ");
+            gets(new_author_name);
+            strcpy(temp->author_name, new_author_name); break;
+        }
+        temp = temp->next;
+        if (temp == NULL) {
+            printf("\t\t\t\t\t We Can Found This Book\n"); break;
+        }
+    }
+}
+
+void edit_id(Book *book) {
+    Book *temp = book;
+    int id;
+    printf("Enter The Id Of The Book : "); getchar();
+    scanf("%d", &id);
+    // Find The Book
+    while (1) {
+        if (temp->id == id) {
+            int new_id;
+            printf("Enter The New Id : ");
+            gets(new_id);
+            temp->id = new_id; break;
+        }
+        temp = temp->next;
+        if (temp == NULL) {
+            printf("\t\t\t\t\t We Can Found This Book\n"); break;
+        }
+    }
+}
+
 void edit_books(Book *book) {
-    Book *temp;
-    int i, pos;
-    // Test Is This Book Exit
-    pos = search_bookName(book); i = 0;
-    if (pos != -1) {
-        char new_book_name[50];
-        printf("\nEnter New Book Name : ");
-        gets(new_book_name);
-        // scanf("%[^\n]s", new_book_name); new_book_name[49] = '\0';
-        // Find The Book
-        temp = book;
-        while (i < pos - 1) { i++; temp = temp->next; }
-        strcpy(temp->book_name, new_book_name);
-    }
-    // Test Is This Author Exit
-    pos = search_authorName(book); i = 0;
-    if (pos != -1) {
-        char new_author_name[50];
-        printf("\nEnter New Author Name : ");
-        gets(new_author_name);
-        // scanf("%[^\n]s", new_author_name); new_author_name[49] = '\0';
-        temp = book;
-        while (i < pos - 1) { i++; temp = temp->next; }
-        strcpy(temp->author_name, new_author_name);
-    }
-    // Test Is This Author Exit
-    pos = search_id(book); i = 0;
-    if (pos != -1) {
-        int new_id;
-        printf("\nEnter New Id : ");
-        scanf("%d", &new_id);
-        temp = book;
-        while (i < pos - 1) { i++; temp = temp->next; }
-        temp->id = new_id;
+    Book *temp = book;
+    // Choose Editing
+    int choose_edit;
+    printf("\t\t\t\t\t[1]: Edit Using Book Name\n");
+    printf("\t\t\t\t\t[2]: Edit Using Author Name\n");
+    printf("\t\t\t\t\t[3]: Edit Using Id Name\n");
+    printf("Choose Method For Editing : ");
+    scanf("%d", &choose_edit);
+    switch(choose_edit) {
+        case 1: {
+            edit_bookName(book); break;
+        }
+        case 2: {
+            edit_authorName(book); break;
+        }
+        case 3: {
+            edit_id(book); break;
+        }
+        default: break;
     }
 }
 // End Edit Function
@@ -165,13 +209,38 @@ int search_books(Book *book) {
 }
 // End Search Function
 
-/*
+
 // Start Delete Function
-void delete_books(Book *info_book, int nbr_of_book) {
-    printf("Hello 1");
+
+void delete_bookName(Book *book) {
+    char book_name[50];
+
+}
+
+void delete_books(Book *book) {
+    Book *temp = book;
+    // Choose Editing
+    int choose_delete;
+    printf("\t\t\t\t\t[1]: Deleting Using Book Name\n");
+    printf("\t\t\t\t\t[2]: Deleting Using Author Name\n");
+    printf("\t\t\t\t\t[3]: Deleting Using Id Name\n");
+    printf("Choose Method For Editing : ");
+    scanf("%d", &choose_delete);
+    switch(choose_delete) {
+        case 1: {
+            delete_bookName(book); break;
+        }
+        case 2: {
+            delete_authorName(book); break;
+        }
+        case 3: {
+            delete_id(book); break;
+        }
+        default: break;
+    }
 }
 // End Delete Function
-*/
+
 
 // Start Display Function
 
