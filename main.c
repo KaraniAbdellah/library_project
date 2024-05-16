@@ -217,21 +217,19 @@ void delete_bookName(Book ***book) {
     printf("Enter The Name Of The Book : "); getchar();
     gets(book_name);
     // Find The Book
-    while (1) {
+    while (temp != NULL) {
         if (strcmp(temp->book_name, book_name) == 0) {
             Book *p = temp;
             if (strcmp((**book)->book_name, book_name) == 0) {
                 **book = temp->next;
             }
-            temp = temp->next;
+            else temp = temp->next;
             free(p);
             break;
         }
         temp = temp->next;
-        if (temp == NULL) {
-            printf("\t\t\t\t\t We Can Found This Book\n"); break;
-        }
     }
+    if (temp == NULL) printf("\t\t\t\t\t We Can Found This Book\n");
 }
 
 
