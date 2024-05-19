@@ -3,6 +3,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <string.h>
+#define MAX_BOOK_NAME_LENGTH 50
+#define MAX_AUTHOR_NAME_LENGTH 50
+
+/* ******* @copyright 2024 May 19 23:00 || Made With Love By 	ABDELLAH KARANI ****** */
 
 // In This Project Her Is The Importante Function
 /*
@@ -12,36 +16,75 @@
     - Delete All Books
     - Edit Some Information About The Book [id, name, author]
     - Show Books
+    - Trach Books
+
+		------- >> Must The Data Add To Two Filies book.txt and trach.txt
+		
+		////////////// As We Know We Stell Need More Fonctionallity Like : 
+			--> Check If We have A Duplicates Book_name or Author_name or Ids.
+			--> Every Thing Shound Be In Filies [Edit, Search, Add, Delete, Display].
+
+
+		------- >> Next Project About Bank System We Will Try To Do it.
 */
 
 // Strcture
 typedef struct Book {
     int id;
-    char book_name[50];
-    char author_name[50];
+    char book_name[MAX_BOOK_NAME_LENGTH];
+    char author_name[MAX_AUTHOR_NAME_LENGTH];
     struct Book *next;
 } Book;
 
 
 typedef struct Trach {
     int id;
-    char book_name[50];
-    char author_name[50];
+    char book_name[MAX_BOOK_NAME_LENGTH];
+    char author_name[MAX_AUTHOR_NAME_LENGTH];
     struct Trach *next;
 } Trach;
 
+
+int is_book_name_exit(Book ****book, char book_name[]) {
+	if (***book == NULL) return 0;
+	else {
+		Book *temp = ***book;
+		while (temp != NULL) {
+			if (strcmp(book_name, temp->book_name) == 0) return 0;
+		}
+	}
+	return 1;
+}
+
+void add_to_file(Book *new_book, char fileName[]) {
+	FILE *p_file = fopen(fileName, "a+");
+	if (p_file == NULL) { printf("\nCan Not Open This File\n"); }
+	else {
+		fprintf(p_file, "%d %s %s\n", new_book->id, new_book->book_name, new_book->author_name);
+	}
+}
+
 // Start Add Function
 void create_book(Book ***book) {
-    Book *new_book = (Book *) malloc(sizeof(Book));
-    printf("Enter Name Of The Book : "); getchar();
-    scanf("%[^\n]", new_book->book_name); new_book->book_name[49] = '\0';
+    char new_id[50];
+    Book *new_book = (Book *)malloc(sizeof(Book));
+    getchar();
+  	printf("Enter Name Of The Book : ");
+  	scanf("%49[^\n]", new_book->book_name); new_book->book_name[49] = '\0';
+  	// Check If This BookName Already Exit By Open The File
+  	getchar();
     printf("Enter The Id Of The Book : ");
-    scanf("%d", &new_book->id); new_book->id = (int) new_book->id; getchar();
-    printf("Enter The Author Name : "); new_book->author_name[49] = '\0';
-    scanf("%[^\n]", new_book->author_name);
+    scanf("%49[^\n]", new_id); new_id[49] = '\0';
+    // Check If This Id Already Exit By Open The File
+    getchar();
+    new_book->id = atoi(new_id);
+    printf("Enter The Author Name : ");
+    scanf("%49[^\n]", new_book->author_name); new_book->author_name[49] = '\0';
+    // Check If This Author Name Already Exit By Open The File
     new_book->next = NULL;
     new_book->next = **book;
     **book = new_book;
+    add_to_file(new_book, "book.txt");
 }
 
 
@@ -138,7 +181,9 @@ void edit_books(Book *book) {
         case 3: {
             edit_id(book); break;
         }
-        default: break;
+        default: {
+        	printf("\nWorrong Number\n"); break;
+        }
     }
 }
 // End Edit Function
@@ -216,7 +261,9 @@ int search_books(Book *book) {
         case 3: {
             search_id(book); break;
         }
-        default: break;
+        default: {
+        	printf("\nWorrong Number\n"); break;
+        }
     }
 }
 // End Search Function
@@ -225,19 +272,22 @@ int search_books(Book *book) {
 // Start Trach Function
 
 void add_to_trach(Book *book_deleted, Trach ****trach) {
-	// printf("\nBook Deleted is %s\n", book_deleted->book_name);
-	Trach *trach_book = (Trach *) malloc(sizeof(Trach));
-	strcpy(trach_book->book_name, book_deleted->book_name);
-	strcpy(trach_book->author_name, book_deleted->author_name);
-	trach_book->id = book_deleted->id;
-	trach_book->next = NULL;
-	if (***trach == NULL) {
-		***trach = trach_book;
-	} else {
-		trach_book->next = ***trach;
-		***trach = trach_book;
-	}
+    Trach *trach_book = (Trach *) malloc(sizeof(Trach));
+    strcpy(trach_book->book_name, book_deleted->book_name);
+    strcpy(trach_book->author_name, book_deleted->author_name);
+    trach_book->id = book_deleted->id;
+    trach_book->next = NULL;
+    if (***trach == NULL) {
+        ***trach = trach_book;
+    } else {
+        Trach *temp = ***trach;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = trach_book;
+    }
 }
+
 
 // End Trach Function
 
@@ -260,6 +310,7 @@ void delete_bookName(Book ***book, Trach ***trach) {
 				if (strcmp(book_name, temp->next->book_name) == 0) {
 					Book *p = temp->next;
 					add_to_trach(p, &trach);
+					add_to_file(temp, "trach.txt");
 					temp->next = p->next;
 					free(p); printf("\nDeleted The Book Succefully : %s\n", book_name);
 					break;
@@ -289,6 +340,7 @@ void delete_authorName(Book ***book, Trach ***trach) {
 			while (temp->next != NULL) {
 				if (strcmp(author_name, temp->next->author_name) == 0) {
 					Book *p = temp->next;
+					add_to_trach(p, &trach);
 					temp->next = p->next;
 					free(p); printf("\nDeleted The Book Succefully : %s\n", author_name);
 					break;
@@ -318,6 +370,7 @@ void delete_id(Book ***book, Trach ***trach) {
 			while (temp->next != NULL) {
 				if (id == temp->next->id) {
 					Book *p = temp->next;
+					add_to_trach(p, &trach);
 					temp->next = p->next;
 					free(p); printf("\nDeleted The Book Succefully : %d\n", id);
 					break;
@@ -350,7 +403,9 @@ void delete_books(Book **book, Trach **trach) {
         case 3: {
             delete_id(&book, &trach); break;
         }
-        default: break;
+        default: {
+        	printf("\nWorrong Number\n"); break;
+        }
     }
 }
 // End Delete Function
@@ -395,7 +450,7 @@ void trach(Book *info_book, int nbr_of_book) {
 
 
 int main() {
-    int choose;
+    char choose_nbr[4]; choose_nbr[3] = '\0';
     Book *book = NULL;
     Trach *trach_books = NULL;
     printf("[1]: Add A Book\n");
@@ -405,11 +460,13 @@ int main() {
     printf("[5]: Display The Books\n");
     printf("[6]: Display The Trach\n");
     printf("[7]: Exit\n");
+    printf("Notes : If You Are Enter A Number In Id Will Be Considered Like 0:\n");
+    int choose;
     do {
         printf("\n--------------------------------\n");
         printf("Enter An Operation : ");
-        scanf("%d", &choose);
-        choose = (int) choose;
+        scanf("%[^\n]", choose_nbr);
+        choose = atoi(choose_nbr);
         switch(choose) {
             case 1: {
                 add_books(&book); break;
@@ -432,6 +489,7 @@ int main() {
             }
             default: break;
         }
+        getchar();
     } while (choose < 7 && choose > 0);
     return 0;
 }
