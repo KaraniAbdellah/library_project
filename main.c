@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
 #define MAX_BOOK_NAME_LENGTH 50
 #define MAX_AUTHOR_NAME_LENGTH 50
 
@@ -440,19 +441,37 @@ void trach(Trach **trach_books) {
 	}
 }
 
-/*
-// Start Trach Function
-void trach(Book *info_book, int nbr_of_book) {
-    printf("Trach Function");
-}
 // End Trach Function
-*/
+
+// Start Loading
+void loading() {
+	printf("\t\t\t\t");
+	const int sleepDuration = 500000;
+	const int total_sleep = 30;
+	printf("Loading : ");
+	fflush(stdout); // Empty The Tompen
+	for (int i = 0; i < total_sleep; i++) {
+		printf("\rLoading : ["); // Uses \r to return to the beginning of the line and reprints "Loading : [" at each iteration
+		for (int j = 0; j < total_sleep; j++) {
+			if (i >= j) printf("%c", 219);
+			else printf(" ");
+		}
+		printf("] %d%%", (i + 1) * 100 / total_sleep);
+		fflush(stdout);
+		usleep(sleepDuration);
+	}
+	printf("\n");
+}
+// End Loading
+
+
 
 
 int main() {
     char choose_nbr[4]; choose_nbr[3] = '\0';
     Book *book = NULL;
     Trach *trach_books = NULL;
+	loading();
     printf("[1]: Add A Book\n");
     printf("[2]: Search About Book\n");
     printf("[3]: Delete A Book\n");
