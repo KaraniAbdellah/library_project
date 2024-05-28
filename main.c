@@ -4,10 +4,11 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
+#include "myLib.h"
 #define MAX_BOOK_NAME_LENGTH 50
 #define MAX_AUTHOR_NAME_LENGTH 50
 
-/* ******* @copyright 2024 May 19 23:00 || Made With Love By 	ABDELLAH KARANI ****** */
+/* ******* @copyright 2024 May 19 23:00 || Made With Love By ABDELLAH KARANI ****** */
 
 // In This Project Her Is The Importante Function
 /*
@@ -43,24 +44,25 @@ typedef struct Trach {
     char book_name[MAX_BOOK_NAME_LENGTH];
     char author_name[MAX_AUTHOR_NAME_LENGTH];
     struct Trach *next;
+	struct Trach *prev;
 } Trach;
 
 
-int is_book_name_exit(Book ****book, char book_name[]) {
-	if (***book == NULL) return 0;
-	else {
-		Book *temp = ***book;
-		while (temp != NULL) {
-			if (strcmp(book_name, temp->book_name) == 0) return 0;
-		}
-	}
-	return 1;
-}
+typedef struct Pin {
+    int id;
+    char book_name[MAX_BOOK_NAME_LENGTH];
+    char author_name[MAX_AUTHOR_NAME_LENGTH];
+    struct Pin *next;
+	struct Pin *prev;
+} Pin;
+
 
 void add_to_file(Book *new_book, char fileName[]) {
-	FILE *p_file = fopen(fileName, "a+");
-	if (p_file == NULL) { printf("\nCan Not Open This File\n"); }
+	FILE *p_file = fopen(fileName, "a");
+	rewind(p_file);
+	if (p_file == NULL) { return; printf("\nCan Not Open This File\n"); }
 	else {
+		printf("Opening The File Succfully :-- %s --\n ", new_book->book_name);
 		fprintf(p_file, "%d %s %s\n", new_book->id, new_book->book_name, new_book->author_name);
 	}
 }
@@ -85,6 +87,7 @@ void create_book(Book ***book) {
     new_book->next = NULL;
     new_book->next = **book;
     **book = new_book;
+	// Add Book In File "book.txt"
     add_to_file(new_book, "book.txt");
 }
 
@@ -106,13 +109,13 @@ void add_books(Book **book) {
 void edit_bookName(Book *book) {
     Book *temp = book;
     char book_name[50];
-    printf("Enter The Name Of The Book : "); getchar();
+    printf("Enter The Name Of The Book : ");  getchar(); 
     scanf("%[^\n]", book_name); book_name[49] = '\0';
     // Find The Book
     while (1) {
         if (strcmp(temp->book_name, book_name) == 0) {
             char new_book_name[50];
-            printf("Enter The New Name : ");
+            printf("Enter The New Name : "); getchar();
             scanf("%[^\n]", new_book_name); new_book_name[49] = '\0';
             strcpy(temp->book_name, new_book_name); break;
         }
@@ -132,7 +135,7 @@ void edit_authorName(Book *book) {
     while (1) {
         if (strcmp(temp->author_name, author_name) == 0) {
             char new_author_name[50];
-            printf("Enter The New Name : ");
+            printf("Enter The New Name : "); getchar();
             scanf("%[^\n]", new_author_name); new_author_name[49] = '\0';
             strcpy(temp->author_name, new_author_name); break;
         }
@@ -200,7 +203,7 @@ int search_bookName(Book *book) {
     Book *temp = book;
     while (temp != NULL) {
         if (strcmp(book_name, temp->book_name) == 0) {
-            printf("\t\t\t\t\tWe Found The Book : %d %s %s", book->id, book->book_name, book->author_name);
+            printf("\t\t\t\t\tWe Found The Book : %d %s %s", temp->id, temp->book_name, temp->author_name);
             return index;
         }
         index++; temp = temp->next;
@@ -218,7 +221,7 @@ int search_authorName(Book *book) {
     Book *temp = book;
     while (temp != NULL) {
         if (strcmp(author_name, temp->author_name) == 0) {
-            printf("\t\t\t\t\tWe Found The Book : %d %s %s", book->id, book->book_name, book->author_name);
+            printf("\t\t\t\t\tWe Found The Book : %d %s %s", temp->id, temp->book_name, temp->author_name);
             return index;
         }
         index++; temp = temp->next;
@@ -235,7 +238,7 @@ int search_id(Book *book) {
     Book *temp = book;
     while (temp != NULL) {
         if (id == temp->id) {
-            printf("\t\t\t\t\tWe Found The Book : %d %s %s", book->id, book->book_name, book->author_name);
+            printf("\t\t\t\t\tWe Found The Book : %d %s %s", temp->id, temp->book_name, temp->author_name);
             return index;
         }
         index++; temp = temp->next;
@@ -271,30 +274,26 @@ int search_books(Book *book) {
 
 
 // Start Trach Function
-
-void add_to_trach(Book *book_deleted, Trach ****trach) {
-    Trach *trach_book = (Trach *) malloc(sizeof(Trach));
-    strcpy(trach_book->book_name, book_deleted->book_name);
-    strcpy(trach_book->author_name, book_deleted->author_name);
-    trach_book->id = book_deleted->id;
-    trach_book->next = NULL;
-    if (***trach == NULL) {
-        ***trach = trach_book;
-    } else {
-        Trach *temp = ***trach;
-        while (temp->next != NULL) {
-            temp = temp->next;
-        }
-        temp->next = trach_book;
-    }
+void add_to_trach(Book *book_deleted, Trach ****trach_books, Trach ****tail) {
+	// printf("%d %s %s\n", book_deleted->id, book_deleted->book_name, book_deleted->author_name);
+	Trach *new_node = (Trach *) malloc(sizeof(Trach));
+	new_node->next = new_node->prev = NULL;
+	new_node->id = book_deleted->id;
+	strcpy(new_node->book_name, book_deleted->book_name);
+	strcpy(new_node->author_name, book_deleted->author_name);
+	if (***trach_books == NULL) {
+		***trach_books = ***tail = new_node; 
+	} else {
+		new_node->prev =  ***tail;
+		(***tail)->next = new_node;
+		***tail = new_node;
+	}
 }
-
-
 // End Trach Function
 
 
 // Start Delete Function
-void delete_bookName(Book ***book, Trach ***trach) {
+void delete_bookName(Book ***book, Trach ***trach_books, Trach ***tail) {
     if (**book != NULL) {
 		Book *temp = **book;
 		char book_name[50];
@@ -303,15 +302,20 @@ void delete_bookName(Book ***book, Trach ***trach) {
 		if (strcmp(book_name, temp->book_name) == 0) {
 			if ((**book)->next == NULL) **book = NULL;
 			(**book)= temp->next;
-			add_to_trach(temp, &trach);
+			// Add To Trach
+			add_to_trach(temp, &trach_books, &tail);
+			// Add To File
+			add_to_file(temp, "trach.txt");
 			free(temp);
 			printf("\nDeleted The Book Succefully : %s\n", book_name); 
 		} else {
 			while (temp->next != NULL) {
 				if (strcmp(book_name, temp->next->book_name) == 0) {
 					Book *p = temp->next;
-					add_to_trach(p, &trach);
-					add_to_file(temp, "trach.txt");
+					// Add To Trach
+					add_to_trach(p, &trach_books, &tail);
+					// Add To File
+					add_to_file(p, "trach.txt");
 					temp->next = p->next;
 					free(p); printf("\nDeleted The Book Succefully : %s\n", book_name);
 					break;
@@ -326,7 +330,7 @@ void delete_bookName(Book ***book, Trach ***trach) {
 }
 
 
-void delete_authorName(Book ***book, Trach ***trach) {
+void delete_authorName(Book ***book, Trach ***trach_books, Trach ***tail) {
     if (**book != NULL) {
 		Book *temp = **book;
 		char author_name[50];
@@ -335,13 +339,20 @@ void delete_authorName(Book ***book, Trach ***trach) {
 		if (strcmp(author_name, temp->author_name) == 0) {
 			if ((**book)->next == NULL) **book = NULL;
 			(**book)= temp->next;
+			// Add To Trach
+			add_to_trach(temp, &trach_books, &tail);
+			// Add To File
+			add_to_file(temp, "trach.txt");
 			free(temp);
 			printf("\nDeleted The Book Succefully : %s\n", author_name); 
 		} else {
 			while (temp->next != NULL) {
 				if (strcmp(author_name, temp->next->author_name) == 0) {
 					Book *p = temp->next;
-					add_to_trach(p, &trach);
+					// Add To Trach
+					add_to_trach(p, &trach_books, &tail);
+					// Add To File
+					add_to_file(p, "trach.txt");
 					temp->next = p->next;
 					free(p); printf("\nDeleted The Book Succefully : %s\n", author_name);
 					break;
@@ -356,7 +367,7 @@ void delete_authorName(Book ***book, Trach ***trach) {
 }
 
 
-void delete_id(Book ***book, Trach ***trach) {
+void delete_id(Book ***book, Trach ***trach_books, Trach ***tail) {
     if (**book != NULL) {
 		Book *temp = **book;
 		int id;
@@ -365,13 +376,20 @@ void delete_id(Book ***book, Trach ***trach) {
 		if (temp->id == id) {
 			if ((**book)->next == NULL) **book = NULL;
 			(**book)= temp->next;
+			// Add To Trach
+			add_to_trach(temp, &trach_books, &tail);
+			// Add To File
+			add_to_file(temp, "trach.txt");
 			free(temp);
 			printf("\nDeleted The Book Succefully : %d\n", id); 
 		} else {
 			while (temp->next != NULL) {
 				if (id == temp->next->id) {
 					Book *p = temp->next;
-					add_to_trach(p, &trach);
+					// Add To Trach
+					add_to_trach(p, &trach_books, &tail);
+					// Add To File
+					add_to_file(p, "trach.txt");
 					temp->next = p->next;
 					free(p); printf("\nDeleted The Book Succefully : %d\n", id);
 					break;
@@ -385,7 +403,7 @@ void delete_id(Book ***book, Trach ***trach) {
     } else printf("\nNo Book Exit\n");
 }
 
-void delete_books(Book **book, Trach **trach) {
+void delete_books(Book **book, Trach **trach_books, Trach **tail) {
     // Choose Deleting
     int choose_delete;
     printf("\t\t\t\t\t[1]: Deleting Using Book Name\n");
@@ -396,13 +414,13 @@ void delete_books(Book **book, Trach **trach) {
     choose_delete = (int) choose_delete;
     switch(choose_delete) {
         case 1: {
-            delete_bookName(&book, &trach); break;
+            delete_bookName(&book, &trach_books, &tail); break;
         }
         case 2: {
-            delete_authorName(&book, &trach); break;
+            delete_authorName(&book, &trach_books, &tail); break;
         }
         case 3: {
-            delete_id(&book, &trach); break;
+            delete_id(&book, &trach_books, &tail); break;
         }
         default: {
         	printf("\nWorrong Number\n"); break;
@@ -413,73 +431,146 @@ void delete_books(Book **book, Trach **trach) {
 
 
 // Start Display Function
-
 void dispay_books(Book *book) {
     if (book == NULL) printf("\nNo Book Exit\n");
     else {
         Book *temp = book;
+		printf("\n--Id-- \t --Book_Name-- \t --Author_Name--\n\n");
         while (temp != NULL) {
-            printf("%d %s %s\n", temp->id, temp->book_name, temp->author_name);
+            printf("%d \t %s \t %s\n", temp->id, temp->book_name, temp->author_name);
             temp = temp->next;
         }
     }
 }
-
 // End Display Function
 
-// Start Trach Function For Display 
 
-void trach(Trach **trach_books) {
-	Trach *temp = *trach_books;
-	if (temp == NULL) printf("Trach Empty");
+
+// Start display all book from file
+void display_all_books_in_file() {
+	FILE *p_file = fopen("book.txt", "r");
+	if (p_file == NULL) return;
 	else {
-		printf("\nThe Books That Exit In The Trach Is : \n");
-		while (temp != NULL) {
-			printf("%s %d %s\n", temp->book_name, temp->id, temp->author_name);
-			temp = temp->next;
-		}	
+		char book[50], author[50];
+		int id;
+		printf("\n--Id-- \t --Book_Name-- \t --Author_Name--\n\n");
+		while (!feof(p_file)) {
+			fscanf(p_file, "%d %s %s", &id, book, author);
+			printf("%d \t %s \t %s\n", id, book, author);
+		}
 	}
 }
+// End display all book from file
 
+
+// Start Trach Function For Display
+void display_trach(Trach *trach_books) {
+	if(trach_books == NULL) printf("\nThe Trach Empty\n");
+	else {
+		Trach *temp = trach_books;
+		printf("\n--Id-- \t --Book_Name-- \t --Author_Name--\n\n");
+        while (temp != NULL) {
+            printf("%d \t %s \t %s\n", temp->id, temp->book_name, temp->author_name);
+            temp = temp->next;
+        }
+	}
+}
 // End Trach Function
 
-// Start Loading
-void loading() {
-	printf("\t\t\t\t");
-	const int sleepDuration = 500000;
-	const int total_sleep = 30;
-	printf("Loading : ");
-	fflush(stdout); // Empty The Tompen
-	for (int i = 0; i < total_sleep; i++) {
-		printf("\rLoading : ["); // Uses \r to return to the beginning of the line and reprints "Loading : [" at each iteration
-		for (int j = 0; j < total_sleep; j++) {
-			if (i >= j) printf("%c", 219);
-			else printf(" ");
+// Start Display All Books In Trach
+void display_all_books_in_trach() {
+	FILE *p_file = fopen("trach.txt", "r");
+	if (p_file == NULL) return;
+	else {
+		char book[50], author[50];
+		int id;
+		printf("\n--Id-- \t --Book_Name-- \t --Author_Name--\n\n");
+		while (!feof(p_file)) {
+			fscanf(p_file, "%d %s %s", &id, book, author);
+			printf("%d \t %s \t %s\n", id, book, author);
 		}
-		printf("] %d%%", (i + 1) * 100 / total_sleep);
-		fflush(stdout);
-		usleep(sleepDuration);
 	}
-	printf("\n");
 }
-// End Loading
+// End Display All Books In Trach
 
+// Start Delete From Trach
+void delete_trach_bookName(Trach ***trach_books, Trach ***tail) {
+	printf("\nNot Implemented Yet : \n");
+}
+void delete_trach_authorName(Trach ***trach_books, Trach ***tail) {
+	printf("\nNot Implemented Yet : \n");
+}
+void delete_trach_id(Trach ***trach_books, Trach ***tail) {
+	printf("\nNot Implemented Yet : \n");
+}
+void delete_from_trach(Trach **trach_books, Trach **tail) {
+    // Choose Deleting
+    int choose_delete;
+    printf("\t\t\t\t\t[1]: Deleting Using Book Name\n");
+    printf("\t\t\t\t\t[2]: Deleting Using Author Name\n");
+    printf("\t\t\t\t\t[3]: Deleting Using Id Name\n");
+    printf("Choose Method For Deleting : ");
+    scanf("%d", &choose_delete);
+    choose_delete = (int) choose_delete;
+    switch(choose_delete) {
+        case 1: {
+            delete_trach_bookName(&trach_books, &tail); break;
+        }
+        case 2: {
+            delete_trach_authorName(&trach_books, &tail); break;
+        }
+        case 3: {
+            delete_trach_id(&trach_books, &tail); break;
+        }
+        default: {
+        	printf("\nWorrong Number\n"); break;
+        }
+    }	
+}
+// End Deleted From Trach
+
+// Start Pin A Book
+void pin_book() {
+	
+}
+// End Pin A Book
+
+// Start Display Pins Books
+void display_pin_books() {
+
+}
+// End Display Al Pins Books
+
+// Start Display All Pins Books
+void display_all_pin_books() {
+	
+}
+// End Display All Pins Books 
 
 
 
 int main() {
     char choose_nbr[4]; choose_nbr[3] = '\0';
     Book *book = NULL;
-    Trach *trach_books = NULL;
-	loading();
+    Trach *trach_books = NULL; Trach *tail = NULL;
+	Pin *pin_books = NULL; Pin *summit = NULL;
+	// Loading Feature	
+	// loading();
     printf("[1]: Add A Book\n");
     printf("[2]: Search About Book\n");
     printf("[3]: Delete A Book\n");
     printf("[4]: Edit Some Information\n");
     printf("[5]: Display The Books\n");
-    printf("[6]: Display The Trach\n");
-    printf("[7]: Exit\n");
-    printf("Notes : If You Are Enter A Number In Id Will Be Considered Like 0:\n");
+    printf("[6]: Display All Books In File\n");
+    printf("[7]: Display The Trach\n");
+    printf("[8]: Display All Books In Trach File\n");
+	printf("[9]: Delete From Trach\n");
+    printf("[10]: Pin A Book\n"); // Using Just The Id
+	printf("[11]: Display The Pin Books\n");
+	printf("[12]: Display All Pin Books In File\n");
+	printf("[13]: Exit\n");
+	// Free Trach And Free File And Free Linked List And Free Pin And Free Filies
+    printf("Note : If You Are Enter A Number In Id Will Be Considered Like 0:\n");
     int choose;
     do {
         printf("\n--------------------------------\n");
@@ -494,7 +585,7 @@ int main() {
                 search_books(book); break;
             }
             case 3: {
-                delete_books(&book, &trach_books); break;
+                delete_books(&book, &trach_books, &tail); break;
             }
             case 4: {
                 edit_books(book); break;
@@ -503,13 +594,32 @@ int main() {
                 dispay_books(book); break;
             }
             case 6: {
-                trach(&trach_books);
+                display_all_books_in_file(); break;
                 break;
+            }
+            case 7: {
+                display_trach(trach_books); break;
+                break;
+            }
+            case 8: {
+                display_all_books_in_trach(); break;
+            }
+            case 9: {
+                delete_from_trach(&trach_books, &tail); break;
+            }
+            case 10: {
+                pin_book(); break;
+            }
+            case 11: {
+                display_pin_books(book); break;
+            }
+            case 12: {
+                display_all_pin_books(book); break;
             }
             default: break;
         }
         getchar();
-    } while (choose < 7 && choose > 0);
+    } while (choose < 12 && choose > 0);
     return 0;
 }
 
