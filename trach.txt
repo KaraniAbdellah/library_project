@@ -3,3 +3,7 @@
 4 r rr
 2 ww ww
 3 ee ee
+5 rr rr
+4 ee ee
+5 rr rr
+3 ww ww
