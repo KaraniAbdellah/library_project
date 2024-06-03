@@ -1,7 +1,7 @@
-#include "myLib.h"
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include "myLib.h"
 
 // Start Loading
 void loading() {
