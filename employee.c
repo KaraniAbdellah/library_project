@@ -10,18 +10,21 @@ void add_to_file(void *new_item, char fileName[]) {
     rewind(p_file);
     if (p_file == NULL) { 
         printf("\nCan Not Open This File\n"); 
-        return; 
+        return;
     }
     else {
         if (new_item != NULL) {
             if (strcmp(fileName, "book.txt") == 0) {
-                Book *new_book = (Book *)new_item;
+                Book *new_book = (Book *) new_item;
+                check_space(&new_book->book_name, &new_book->author_name);
                 fprintf(p_file, "%d %s %s\n", new_book->id, new_book->book_name, new_book->author_name);
             } else if (strcmp(fileName, "pin.txt") == 0) {
                 Pin *new_pin = (Pin *)new_item;
+                check_space(&new_pin->book_name, &new_pin->author_name);
                 fprintf(p_file, "%d %s %s\n", new_pin->id, new_pin->book_name, new_pin->author_name);
             } else if (strcmp(fileName, "trach.txt") == 0) {
                 Pin *new_trach = (Pin *)new_item;
+                check_space(&new_trach->book_name, &new_trach->author_name);
                 fprintf(p_file, "%d %s %s\n", new_trach->id, new_trach->book_name, new_trach->author_name);
             } else {
                 printf("Unsupported file type\n");
@@ -33,13 +36,26 @@ void add_to_file(void *new_item, char fileName[]) {
     }
 }
 
+// Start Check Space In String
+void check_space(char *book_name, char *author_name) {
+    // For Book Name
+    for (int i = 0; book_name[i] != '\0'; i++) {
+        if (book_name[i] == ' ') book_name[i] = '_';
+    }
+    // For Author Name
+    for (int i = 0; author_name[i] != '\0'; i++) {
+        if (author_name[i] == ' ') author_name[i] = '_';
+    }
+}
+
+
 
 // Start Add Function
 void create_book(Book ***book) {
     char new_id[MAX];
     Book *new_book = (Book *)malloc(sizeof(Book));
     getchar();
-  	printf("Enter Name Ofp_file The Book : ");
+  	printf("Enter Name Of The Book : ");
   	scanf("%49[^\n]", new_book->book_name); new_book->book_name[MAX - 1] = '\0';
   	// Check If This BookName Already Exit By Open The File
   	getchar();
@@ -261,7 +277,7 @@ void add_to_trach(Book *book_deleted, Trach ****trach_books, Trach ****tail) {
 	strcpy(new_node->book_name, book_deleted->book_name);
 	strcpy(new_node->author_name, book_deleted->author_name);
 	if (***trach_books == NULL) {
-		***trach_books = ***tail = new_node; 
+		***trach_books = ***tail = new_node;
 	} else {
 		new_node->prev =  ***tail;
 		(***tail)->next = new_node;

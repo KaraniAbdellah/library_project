@@ -6,13 +6,16 @@
 
 int main() {
     int choose;
-    printf("\t\t\t\tHow You Are : \n");
-    printf("\t\t\t\t\t[1] : Employee\n");
-    printf("\t\t\t\t\t[2] : User\n");
+    printf("\t\t\t\t\t👋✨ Welcome! ✨👋\n");
+    printf("\t\t\t\t\t================\n");
+    printf("\t\t\t\t\t👦 [1] Employee\n");
+    printf("\t\t\t\t\t👦 [2] User\n");
+    printf("\t\t\t\t\t================\n");
+    printf("\t\t\t\t\tYour Chooce : ");
     scanf("%d", &choose); getchar();
     switch(choose) {
-        case 1: { Employee(); break; }
-        case 2: { printf("\nOpps! Not Implementd Yet\n"); /* User(); */ break; }
+        case 1: { loading(); Employee(); break; }
+        case 2: { loading(); User(); break; }
         default: printf("\nWrong Number\n");
     }
     return 0;

@@ -6,7 +6,7 @@
 // Start Loading
 void loading() {
 	printf("\t\t\t\t");
-	const int sleepDuration = 500000;
+	const int sleepDuration = 100000;
 	const int total_sleep = 30;
 	printf("Loading : ");
 	fflush(stdout); // Empty The Tompen

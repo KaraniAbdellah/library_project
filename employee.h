@@ -57,6 +57,7 @@
     void pin_book(Pin **pin_books, Pin **summit);
     void display_pin_books(Pin *pin_books);
     void display_all_pin_books();
+    void check_space();
     // End Prototype Of The Employee Function
 #endif
 
