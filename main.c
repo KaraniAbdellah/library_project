@@ -12,7 +12,7 @@ int main() {
     printf("\t\t\t\t\t👦 [2] User\n");
     printf("\t\t\t\t\t================\n");
     printf("\t\t\t\t\tYour Chooce : ");
-    scanf("%d", &choose); getchar();
+    scanf("%d", &choose); getchar(); printf("\n");
     switch(choose) {
         case 1: { loading(); Employee(); break; }
         case 2: { loading(); User(); break; }
