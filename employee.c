@@ -651,7 +651,7 @@ void display_all_pin_books() {
 	        printf("%d \t %s \t %s\n", id, book_name, author_name);
 	    }
 	}
-	fclose(p_file);		
+	fclose(p_file);
 }
 // End Display All Pins Books
 

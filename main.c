@@ -21,3 +21,9 @@ int main() {
     return 0;
 }
 
+// fix the bugs with entering string for search and delete
+
+
+
+
+
