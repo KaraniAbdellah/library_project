@@ -3,6 +3,9 @@
 ## Overview
 This project is a simple library management system implemented in C. It includes functionalities for managing books, employees, and users. The system supports operations such as adding, editing, deleting, searching, and displaying books, managing trach (deleted books), pinning books, and user interactions like reserving and viewing books.
 
+## Project Diagram
+![Project Diagram](https://github.com/user-attachments/assets/49d0542e-3156-4e12-980f-dd090a57b32c)
+
 ## Project Structure
 The project consists of the following files:
 - `main.c`: Entry point of the program.
