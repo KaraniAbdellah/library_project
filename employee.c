@@ -39,12 +39,16 @@ void add_to_file(void *new_item, char fileName[]) {
 // Start Check Space In String
 void check_space(char *book_name, char *author_name) {
     // For Book Name
-    for (int i = 0; book_name[i] != '\0'; i++) {
-        if (book_name[i] == ' ') book_name[i] = '_';
+    if (book_name != NULL) {
+        for (int i = 0; book_name[i] != '\0'; i++) {
+            if (book_name[i] == ' ') book_name[i] = '_';
+        }
     }
     // For Author Name
-    for (int i = 0; author_name[i] != '\0'; i++) {
-        if (author_name[i] == ' ') author_name[i] = '_';
+    if (author_name != NULL) {
+        for (int i = 0; author_name[i] != '\0'; i++) {
+            if (author_name[i] == ' ') author_name[i] = '_';
+        }
     }
 }
 
@@ -94,7 +98,7 @@ void edit_bookName(Book *book) {
         Book *temp = book;
         char book_name[MAX];
         printf("Enter The Name Of The Book : ");  getchar(); 
-        scanf("%[^\n]", book_name); book_name[MAX - 1] = '\0';
+        scanf("%[^\n]", book_name); check_space(book_name, NULL); book_name[MAX - 1] = '\0';
         // Find The Book
         while (1) {
             if (strcmp(temp->book_name, book_name) == 0) {
@@ -116,7 +120,7 @@ void edit_authorName(Book *book) {
         Book *temp = book;
         char author_name[MAX];
         printf("Enter The Name Of The Author : "); getchar();
-        scanf("%[^\n]", author_name); author_name[MAX - 1] = '\0';
+        scanf("%[^\n]", author_name); check_space(author_name, NULL); author_name[MAX - 1] = '\0';
         // Find The Book
         while (1) {
             if (strcmp(temp->author_name, author_name) == 0) {
@@ -188,7 +192,7 @@ int search_bookName(Book *book) {
         int index = 0;
         char book_name[MAX]; getchar();
         printf("Enter The Name Of Book : ");
-        scanf("%[^\n]", book_name); book_name[MAX - 1] = '\0';
+        scanf("%[^\n]", book_name); check_space(book_name, NULL); book_name[MAX - 1] = '\0';
         // Start Searching About The Books
         Book *temp = book;
         while (temp != NULL) {
@@ -208,7 +212,7 @@ int search_authorName(Book *book) {
         int index = 0;
         char author_name[MAX]; getchar();
         printf("Enter The Author Of Book : ");
-        scanf("%[^\n]", author_name); author_name[MAX - 1] = '\0';
+        scanf("%[^\n]", author_name); check_space(author_name, NULL); author_name[MAX - 1] = '\0';
         // scanf("%[^\n]s", author_name); author_name[49] = '\0';
         Book *temp = book;
         while (temp != NULL) {
@@ -293,7 +297,7 @@ void delete_bookName(Book ***book, Trach ***trach_books, Trach ***tail) {
 		Book *temp = **book;
 		char book_name[MAX];
 		printf("Enter The Name Of Book : "); getchar();
-		scanf("%[^\n]", book_name); book_name[MAX - 1] = '\0';
+		scanf("%[^\n]", book_name); check_space(book_name, NULL); book_name[MAX - 1] = '\0';
 		if (strcmp(book_name, temp->book_name) == 0) {
 			if ((**book)->next == NULL) **book = NULL;
 			(**book)= temp->next;
@@ -306,7 +310,7 @@ void delete_bookName(Book ***book, Trach ***trach_books, Trach ***tail) {
 		} else {
 			while (temp != NULL) {
 				if (strcmp(book_name, temp->book_name) == 0) {
-					Book *p = temp->next;
+					Book *p = temp;
 					// Add To Trach
 					add_to_trach(p, &trach_books, &tail);
 					// Add To File
@@ -330,7 +334,7 @@ void delete_authorName(Book ***book, Trach ***trach_books, Trach ***tail) {
 		Book *temp = **book;
 		char author_name[MAX];
 		printf("Enter The Author Of Book : "); getchar();
-		scanf("%[^\n]", author_name); author_name[MAX - 1] = '\0';
+		scanf("%[^\n]", author_name); check_space(author_name, NULL); author_name[MAX - 1] = '\0';
 		if (strcmp(author_name, temp->author_name) == 0) {
 			if ((**book)->next == NULL) **book = NULL;
 			(**book)= temp->next;
@@ -343,7 +347,7 @@ void delete_authorName(Book ***book, Trach ***trach_books, Trach ***tail) {
 		} else {
 			while (temp != NULL) {
 				if (strcmp(author_name, temp->author_name) == 0) {
-					Book *p = temp->next;
+					Book *p = temp;
 					// Add To Trach
 					add_to_trach(p, &trach_books, &tail);
 					// Add To File
@@ -494,7 +498,7 @@ void delete_trach_bookName(Trach ***trach_books, Trach ***tail) {
 		Trach *temp = **trach_books;
 		char book_name[MAX];
 		printf("Enter The Name Of Book : "); getchar();
-		scanf("%[^\n]", book_name); book_name[MAX - 1] = '\0';
+		scanf("%[^\n]", book_name); check_space(book_name, NULL); book_name[MAX - 1] = '\0';
 		if (strcmp(temp->book_name, book_name) == 0) {
 		    if (temp->next == NULL) **trach_books = **tail = NULL;
 		    else **trach_books =  temp->next;
@@ -520,7 +524,7 @@ void delete_trach_authorName(Trach ***trach_books, Trach ***tail) {
     if (**trach_books != NULL) {
 		Trach *temp = **trach_books;
 		char author_name[MAX];
-		printf("Enter The Name Of Author : "); getchar();
+		printf("Enter The Name Of Author : "); check_space(author_name, NULL); getchar();
 		scanf("%[^\n]", author_name); author_name[MAX - 1] = '\0';
 		if (strcmp(temp->author_name, author_name) == 0) {
 		    if (temp->next == NULL) **trach_books = **tail = NULL;
@@ -674,8 +678,6 @@ void Employee() {
 	printf("[11]: Display The Pin Books\n");
 	printf("[12]: Display All Pin Books In File\n");
 	printf("[13]: Exit\n");
-	// Free Trach And Free File And Free Linked List And Free Pin And Free Filies
-    printf("Note : If You Are Enter A Number In Id Will Be Considered Like 0:\n");
     int choose;
     do {
         printf("\n--------------------------------\n");
