@@ -6,6 +6,9 @@ This project is a simple library management system implemented in C. It includes
 ## Project Diagram
 ![Project Diagram](https://github.com/user-attachments/assets/49d0542e-3156-4e12-980f-dd090a57b32c)
 
+## Project Video Overview
+[![Library Project Video](https://img.youtube.com/vi/SoBJeyUhufU/0.jpg)](https://youtu.be/SoBJeyUhufU)
+
 ## Project Structure
 The project consists of the following files:
 - `main.c`: Entry point of the program.
